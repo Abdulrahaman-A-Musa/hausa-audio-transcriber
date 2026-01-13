@@ -42,24 +42,35 @@ try:
     
     # Check if FFmpeg is actually available
     import subprocess
-    try:
-        subprocess.run(['ffmpeg', '-version'], capture_output=True, timeout=2)
-        PYDUB_AVAILABLE = True
-        
-        # Explicitly set ffmpeg paths if local installation exists
-        if local_ffmpeg_bin.exists():
-            ffmpeg_exe = local_ffmpeg_bin / "ffmpeg.exe"
-            ffprobe_exe = local_ffmpeg_bin / "ffprobe.exe"
-            if ffmpeg_exe.exists():
-                AudioSegment.converter = str(ffmpeg_exe)
-            if ffprobe_exe.exists():
-                AudioSegment.ffprobe = str(ffprobe_exe)
-    except (subprocess.SubprocessError, FileNotFoundError):
-        # FFmpeg not available - pydub won't work
-        PYDUB_AVAILABLE = False
+    ffmpeg_found = False
+    
+    # First, try to set local FFmpeg paths if they exist
+    if local_ffmpeg_bin.exists():
+        ffmpeg_exe = local_ffmpeg_bin / "ffmpeg.exe"
+        ffprobe_exe = local_ffmpeg_bin / "ffprobe.exe"
+        if ffmpeg_exe.exists() and ffprobe_exe.exists():
+            AudioSegment.converter = str(ffmpeg_exe)
+            AudioSegment.ffprobe = str(ffprobe_exe)
+            ffmpeg_found = True
+            print(f"✅ Using local FFmpeg: {ffmpeg_exe}")
+    
+    # If local not found, check if ffmpeg is in PATH
+    if not ffmpeg_found:
+        try:
+            subprocess.run(['ffmpeg', '-version'], capture_output=True, timeout=2, check=True)
+            ffmpeg_found = True
+            print("✅ Using system FFmpeg from PATH")
+        except (subprocess.SubprocessError, FileNotFoundError, subprocess.CalledProcessError):
+            pass
+    
+    PYDUB_AVAILABLE = ffmpeg_found
+    
+    if not ffmpeg_found:
+        print("⚠️ FFmpeg not found - pydub will not work for AMR/MP3/M4A conversion")
         
 except ImportError:
     PYDUB_AVAILABLE = False
+    print("⚠️ pydub not installed")
 
 st.set_page_config(
     page_title="Hausa Audio Transcriber - Simple",
