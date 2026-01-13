@@ -3,8 +3,7 @@ streamlit>=1.28.0
 
 # Speech Recognition & Translation
 SpeechRecognition>=3.10.0
-googletrans==3.1.0a0
-httpx==0.13.3
+deep-translator>=1.11.4
 
 # Audio Processing
 soundfile>=0.12.1
@@ -28,5 +27,3 @@ lazy-loader>=0.3
 msgpack>=1.0.5
 pooch>=1.7.0
 soxr>=0.3.5
-pathlib2>=2.3.7
-
