@@ -119,34 +119,34 @@ st.markdown("""
 if PYDUB_AVAILABLE:
     st.markdown("""
     <div class="highlight-box">
-        <h3>✨ FFmpeg Enabled - Full Format Support!</h3>
-        <p><strong>Upload ANY audio format:</strong> MP3, M4A, AMR, AAC, 3GP, WAV, OGG, FLAC, WMA, WEBM, OPUS</p>
-        <p>🔄 Automatic conversion to WAV for all formats!</p>
-        <p>✅ <strong>No manual conversion needed - just upload and transcribe!</strong></p>
-        <p>📱 <strong>Perfect for phone recordings (AMR, 3GP, M4A)!</strong></p>
-        <p>🎵 <strong>Music files (MP3, AAC) also supported!</strong></p>
+        <h3>✨ Audio Format Support</h3>
+        <p><strong>✅ Directly Supported:</strong> WAV, FLAC, OGG (instant processing)</p>
+        <p><strong>⚠️ Needs Conversion:</strong> MP3, M4A, AMR, AAC, 3GP (convert online first)</p>
+        <p>📱 <strong>For phone recordings (AMR, 3GP, M4A):</strong> Use free online converter</p>
+        <p>� <strong>Quick Converter:</strong> <a href="https://cloudconvert.com/to/wav" target="_blank">cloudconvert.com/to/wav</a></p>
+        <p>💡 <strong>Tip:</strong> Convert to WAV once, then upload for instant transcription!</p>
     </div>
     """, unsafe_allow_html=True)
 elif AUDIO_CONVERSION_AVAILABLE:
     st.markdown("""
     <div class="highlight-box">
-        <h3>✨ Audio Conversion Available!</h3>
-        <p><strong>Works Best:</strong> WAV, FLAC, OGG (instant processing)</p>
-        <p><strong>Needs FFmpeg:</strong> MP3, M4A, AMR, AAC, 3GP</p>
-        <p>🔄 WAV/FLAC/OGG files auto-convert instantly!</p>
-        <p>⚠️ For MP3/M4A: Either convert online first or install FFmpeg</p>
-        <p>✅ <strong>Recommended: Upload WAV files for best experience!</strong></p>
+        <h3>✨ Audio Format Support</h3>
+        <p><strong>✅ Directly Supported:</strong> WAV, FLAC, OGG (instant processing)</p>
+        <p><strong>⚠️ Needs Online Conversion:</strong> MP3, M4A, AMR, AAC, 3GP</p>
+        <p>� <strong>For phone recordings (AMR, 3GP, M4A):</strong> Convert to WAV first</p>
+        <p>🔗 <strong>Quick Converter:</strong> <a href="https://cloudconvert.com/to/wav" target="_blank">cloudconvert.com/to/wav</a></p>
+        <p>💡 <strong>Tip:</strong> WAV files = instant transcription!</p>
     </div>
     """, unsafe_allow_html=True)
 else:
     st.markdown("""
     <div class="highlight-box">
-        <h3>📌 WAV Files Recommended</h3>
-        <p><strong>For automatic format conversion</strong>, install pydub:</p>
-        <code>pip install pydub</code>
-        <p><strong>Without pydub:</strong> Upload WAV files directly, or convert online first:</p>
+        <h3>📌 WAV Files Required</h3>
+        <p><strong>✅ Supported:</strong> WAV, FLAC, OGG only</p>
+        <p><strong>📱 For phone recordings:</strong> Convert to WAV online first:</p>
         <ul>
-            <li>🌐 <strong>Online Converter:</strong> <a href="https://cloudconvert.com/to/wav" target="_blank">cloudconvert.com/to/wav</a></li>
+            <li>🌐 <a href="https://cloudconvert.com/to/wav" target="_blank">CloudConvert</a> (Recommended)</li>
+            <li>🌐 <a href="https://online-audio-converter.com/" target="_blank">Online Audio Converter</a></li>
         </ul>
     </div>
     """, unsafe_allow_html=True)
@@ -238,8 +238,8 @@ with col1:
         accepted_types = ['wav', 'flac', 'ogg', 'mp3', 'm4a', 'aac', 'amr', '3gp', 'wma', 'webm', 'opus']
         file_help = "Upload WAV/FLAC/OGG (best) or MP3/M4A/AMR (needs ffmpeg). WAV recommended for instant processing!"
     else:
-        accepted_types = ['wav']
-        file_help = "Upload your Hausa audio in WAV format (install soundfile & librosa for other formats)"
+        accepted_types = ['wav', 'flac', 'ogg']
+        file_help = "✅ WAV/FLAC/OGG work instantly | ⚠️ For AMR/MP3/M4A: convert to WAV online first (cloudconvert.com/to/wav)"
     
     uploaded_files = st.file_uploader(
         "Choose audio files (up to 10)",
@@ -361,20 +361,27 @@ def convert_to_wav(audio_file, original_filename):
             raise Exception(f"Unable to convert {file_ext.upper()} format")
             
     except Exception as e:
-        st.error(f"❌ Conversion failed: {str(e)}")
-        st.info(f"""
-        **Conversion Error for {file_ext.upper()} file**
+        st.error(f"❌ Conversion failed for {file_ext.upper()} format")
+        st.warning(f"""
+        **{file_ext.upper()} files need conversion to WAV format**
         
-        **Quick Fix - Run the FFmpeg installer:**
-        ```bash
-        python install_ffmpeg_simple.py
-        ```
-        Then restart the app!
+        📱 **Quick & Easy Online Conversion (Recommended):**
         
-        **Or convert online (1 minute):**
-        1. Go to: https://cloudconvert.com/to/wav
-        2. Upload your {file_ext.upper()} file  
-        3. Download WAV and upload here
+        1. Go to: **[CloudConvert WAV Converter](https://cloudconvert.com/to/wav)**
+        2. Upload your {file_ext.upper()} file
+        3. Click "Convert" and wait 10-30 seconds
+        4. Download the WAV file
+        5. Upload the WAV file here
+        
+        **OR use these free converters:**
+        - **[Online Audio Converter](https://online-audio-converter.com/)** - Fast & easy
+        - **[FreeConvert](https://www.freeconvert.com/audio-converter)** - No registration
+        - **[Zamzar](https://www.zamzar.com/)** - Email delivery option
+        
+        💡 **Tip:** Save converted WAV files for future use!
+        
+        ⚠️ **Note:** This online app doesn't include FFmpeg for {file_ext.upper()} conversion.
+        For offline conversion, use desktop audio software like Audacity (free).
         """)
         return None
         
