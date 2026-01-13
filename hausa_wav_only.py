@@ -32,17 +32,32 @@ except ImportError:
 
 # Try to import pydub for better format support (after PATH setup)
 try:
-    from pydub import AudioSegment
-    PYDUB_AVAILABLE = True
+    import warnings
+    # Suppress pydub warnings about regex escape sequences (Python 3.13+)
+    warnings.filterwarnings('ignore', category=SyntaxWarning, module='pydub')
+    # Suppress pydub runtime warnings about missing ffmpeg
+    warnings.filterwarnings('ignore', category=RuntimeWarning, module='pydub')
     
-    # Explicitly set ffmpeg paths if local installation exists
-    if local_ffmpeg_bin.exists():
-        ffmpeg_exe = local_ffmpeg_bin / "ffmpeg.exe"
-        ffprobe_exe = local_ffmpeg_bin / "ffprobe.exe"
-        if ffmpeg_exe.exists():
-            AudioSegment.converter = str(ffmpeg_exe)
-        if ffprobe_exe.exists():
-            AudioSegment.ffprobe = str(ffprobe_exe)
+    from pydub import AudioSegment
+    
+    # Check if FFmpeg is actually available
+    import subprocess
+    try:
+        subprocess.run(['ffmpeg', '-version'], capture_output=True, timeout=2)
+        PYDUB_AVAILABLE = True
+        
+        # Explicitly set ffmpeg paths if local installation exists
+        if local_ffmpeg_bin.exists():
+            ffmpeg_exe = local_ffmpeg_bin / "ffmpeg.exe"
+            ffprobe_exe = local_ffmpeg_bin / "ffprobe.exe"
+            if ffmpeg_exe.exists():
+                AudioSegment.converter = str(ffmpeg_exe)
+            if ffprobe_exe.exists():
+                AudioSegment.ffprobe = str(ffprobe_exe)
+    except (subprocess.SubprocessError, FileNotFoundError):
+        # FFmpeg not available - pydub won't work
+        PYDUB_AVAILABLE = False
+        
 except ImportError:
     PYDUB_AVAILABLE = False
 
