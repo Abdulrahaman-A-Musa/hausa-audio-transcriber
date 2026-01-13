@@ -19,8 +19,8 @@ if local_ffmpeg_bin.exists():
 # Simple transcription - no audio conversion needed
 import speech_recognition as sr
 
-# Free translation
-from googletrans import Translator
+# Free translation using deep-translator (more reliable)
+from deep_translator import GoogleTranslator
 
 # Try to import soundfile and librosa for automatic conversion
 try:
@@ -752,16 +752,18 @@ def detect_speaker_role(text):
 
 
 def translate_text(text, target_lang):
-    """Translate text using Google Translate (FREE)"""
+    """Translate text using Google Translate (FREE) via deep-translator"""
     if not text or len(text.strip()) == 0:
         return ""
     
     try:
-        translator = Translator()
+        # Use deep-translator for more reliable translation
+        translator = GoogleTranslator(source='auto', target=target_lang[1])
+        
         with st.spinner(f"🔄 Translating to {target_lang[0]}..."):
-            result = translator.translate(text, src='auto', dest=target_lang[1])
-            if result and hasattr(result, 'text'):
-                return result.text
+            result = translator.translate(text)
+            if result:
+                return result
             else:
                 st.warning("⚠️ Translation returned empty result")
                 return text  # Return original if translation fails
@@ -824,8 +826,8 @@ if transcribe_btn and uploaded_files:
                 
                 for idx, seg in enumerate(temp_transcription_segments):
                     try:
-                        translator = Translator()
-                        translated_text = translator.translate(seg['text'], src='auto', dest=target_lang[1]).text
+                        translator = GoogleTranslator(source='auto', target=target_lang[1])
+                        translated_text = translator.translate(seg['text'])
                         translated_segments.append({
                             'start': seg['start'],
                             'end': seg['end'],
