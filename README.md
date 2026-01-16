@@ -14,7 +14,7 @@ A powerful Streamlit web application for transcribing Hausa audio recordings wit
 
 ## 🚀 Live Demo
 
-[Try the app here](https://your-app-url.streamlit.app) *(Update with your actual URL after deployment)*
+[Try the app here](https://huggingface.co/spaces/Abdulrahama/hausa-audio-transcriber) 
 
 ## 📋 Use Cases
 
@@ -88,7 +88,6 @@ streamlit run hausa_wav_only.py
 3. Connect your GitHub account
 4. Deploy with one click!
 
-See [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md) for detailed instructions.
 
 ## 📖 Usage
 
@@ -174,3 +173,4 @@ For questions or issues:
 **Built for accurate transcription of survey interviews in Hausa language with English translation and speaker identification.**
 
 © 2026 Abdulrahaman Musa | Mortality Survey Transcription Tool
+
